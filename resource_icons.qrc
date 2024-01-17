@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>icons/chat-bubble-xmark.svg</file>
+     <file>icons/chat-minus-in.svg</file>
+     <file>icons/chat-plus-in.svg</file>
+     <file>icons/floppy-disk.svg</file>
+     <file>icons/import.svg</file>
+     <file>icons/upload.svg</file>
+ </qresource>
+ </RCC>

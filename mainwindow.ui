@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1501</width>
+    <height>576</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1501</width>
+    <height>576</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1501</width>
+    <height>576</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>rosbag editor - v.1.0.0</string>
+  </property>
+  <property name="animated">
+   <bool>true</bool>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTreeWidget" name="treeWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>300</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>Project</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTableWidget" name="inputList">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>0</y>
+      <width>601</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="autoScroll">
+     <bool>true</bool>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="horizontalHeaderCascadingSectionResizes">
+     <bool>false</bool>
+    </attribute>
+   </widget>
+   <widget class="QTableWidget" name="outputList">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>0</y>
+      <width>600</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+   </widget>
+   <widget class="QFrame" name="ToolBox">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>450</y>
+      <width>601</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="removeButton">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>30</y>
+       <width>92</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resource_icons.qrc">
+       <normaloff>:/icons/chat-minus-in.svg</normaloff>:/icons/chat-minus-in.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="saveBtn">
+     <property name="geometry">
+      <rect>
+       <x>208</x>
+       <y>30</y>
+       <width>80</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resource_icons.qrc">
+       <normaloff>:/icons/floppy-disk.svg</normaloff>:/icons/floppy-disk.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="applyButton">
+     <property name="geometry">
+      <rect>
+       <x>294</x>
+       <y>30</y>
+       <width>80</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resource_icons.qrc">
+       <normaloff>:/icons/chat-plus-in.svg</normaloff>:/icons/chat-plus-in.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="loadBtn">
+     <property name="geometry">
+      <rect>
+       <x>122</x>
+       <y>30</y>
+       <width>80</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resource_icons.qrc">
+       <normaloff>:/icons/upload.svg</normaloff>:/icons/upload.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>450</y>
+      <width>600</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>291</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="inputTimeLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="beginTimeLabel">
+        <property name="text">
+         <string>Begin Time</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="endTimeLabel">
+        <property name="text">
+         <string>End Time</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDateTimeEdit" name="beginTime">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="dateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>2000</year>
+          <month>1</month>
+          <day>1</day>
+         </datetime>
+        </property>
+        <property name="maximumDateTime">
+         <datetime>
+          <hour>23</hour>
+          <minute>59</minute>
+          <second>59</second>
+          <year>9999</year>
+          <month>12</month>
+          <day>31</day>
+         </datetime>
+        </property>
+        <property name="currentSection">
+         <enum>QDateTimeEdit::MonthSection</enum>
+        </property>
+        <property name="displayFormat">
+         <string>M/d/yy h:mm:ss.zzz AP</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDateTimeEdit" name="endTime">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="displayFormat">
+         <string>M/d/yy h:mm:ss:zzz AP</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>10</y>
+       <width>291</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="outputTimeLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="outBeginTimeLabel">
+        <property name="text">
+         <string>-&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="outEndTimeLabel">
+        <property name="text">
+         <string>-&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDateTimeEdit" name="outBeginTime">
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::UpDownArrows</enum>
+        </property>
+        <property name="displayFormat">
+         <string>M/d/yy h:mm:ss:zzz AP</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDateTimeEdit" name="outEndTime">
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::UpDownArrows</enum>
+        </property>
+        <property name="displayFormat">
+         <string>M/d/yy h:mm:ss:zzz AP</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1501</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_Rosbag"/>
+    <addaction name="actionOpen_Directory"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+   </widget>
+   <widget class="QMenu" name="menuInfo">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionDocumentation"/>
+    <addaction name="separator"/>
+    <addaction name="actionContacts"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuInfo"/>
+  </widget>
+  <action name="actionOpen_Directory">
+   <property name="text">
+    <string>Open Directory</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionOpen_Rosbag">
+   <property name="text">
+    <string>Open Rosbag</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionrosbag2csv">
+   <property name="text">
+    <string>rosbag2csv</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
+   </property>
+  </action>
+  <action name="actionContacts">
+   <property name="text">
+    <string>Info</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="resource_icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>
