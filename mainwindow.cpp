@@ -52,7 +52,10 @@ void MainWindow::on_loadBtn_clicked()
 
     QString filePath = QFileDialog::getOpenFileName(this, "Open Rosbag File", QDir::homePath(), "Rosbag Files (*.db3)");
 
-    load(filePath);
+    if(!filePath.isEmpty()){
+        input_path_ = filePath;
+        load(input_path_);
+    }
 
 }
 
@@ -235,76 +238,114 @@ void MainWindow::on_removeButton_clicked()
 void MainWindow::on_saveBtn_clicked()
 {
 
-    QString filePath = "/home/alesof/test";
-    reader.reset_filter();
+    ui->saveBtn->setEnabled(false);
 
-    rosbag2_storage::StorageOptions storage_options;
-    storage_options.uri = filePath.toStdString();
-    storage_options.storage_id = "sqlite3";
+    cooldown_timer_.setSingleShot(true);
+    connect(&cooldown_timer_, &QTimer::timeout, this, &MainWindow::enableSaveButton);
+    cooldown_timer_.start(1000); // 1s
 
-    auto storage_factory = std::make_shared<rosbag2_storage::StorageFactory>();
-    auto storage = storage_factory->open_read_write(storage_options);
+    try{
 
-    int i=1;
-    const auto metadata = reader.get_metadata();
+        QString filePath = input_path_;
 
-    //Create topics
-    for(const auto &topic_metadata : metadata.topics_with_message_count){
-
-        if(topic_whitelist_.find(topic_metadata.topic_metadata.name)!= topic_whitelist_.end()){
-            std::string test = "prova";
+        QString outName = QString("rosbag2_edit_") + QDateTime::currentDateTime().toString("yy_MM_dd-hh_mm_ss");
 
 
-            auto it = topic_rename_.find(topic_metadata.topic_metadata.name);
-            if(it!=topic_rename_.end()){
-                rosbag2_storage::TopicMetadata modified_topic_metadata = topic_metadata.topic_metadata;
-                modified_topic_metadata.name = it->second;
-                storage->create_topic(modified_topic_metadata);
-                qDebug() << "Creating: "<<modified_topic_metadata.name;
+        int append = 1;
+        QString baseName = outName;
+
+        try {
+            while (QFileInfo::exists(baseName)) {
+                baseName = outName + QString("_%1").arg(append++);
+            }
+        } catch (...) {
+            qDebug() << "Error occurred on output file name.";
+            return;
+        }
+
+        QFileInfo inputFileInfo(input_path_);
+        QString outputPath = inputFileInfo.path();
+        QString fullFilePath = outputPath + "/" + baseName;
+
+        qDebug() << "Output file path: " << fullFilePath;
+
+
+        reader.reset_filter();
+
+        rosbag2_storage::StorageOptions storage_options;
+        storage_options.uri = fullFilePath.toStdString();
+        storage_options.storage_id = "sqlite3";
+
+        auto storage_factory = std::make_shared<rosbag2_storage::StorageFactory>();
+        auto storage = storage_factory->open_read_write(storage_options);
+
+        const auto metadata = reader.get_metadata();
+
+        for(const auto &topic_metadata : metadata.topics_with_message_count){
+
+            if(topic_whitelist_.find(topic_metadata.topic_metadata.name)!= topic_whitelist_.end()){
+
+                auto it = topic_rename_.find(topic_metadata.topic_metadata.name);
+                if(it!=topic_rename_.end()){
+                    rosbag2_storage::TopicMetadata modified_topic_metadata = topic_metadata.topic_metadata;
+                    modified_topic_metadata.name = it->second;
+                    storage->create_topic(modified_topic_metadata);
+                    qDebug() << "Creating: "<<modified_topic_metadata.name;
+                }else{
+                    storage->create_topic(topic_metadata.topic_metadata);
+                    qDebug() << "Creating: "<<topic_metadata.topic_metadata.name;
+                }
+            }
+        }
+
+        reader.reset_filter();
+
+        while (reader.has_next()) {
+
+            auto bag_message = reader.read_next();
+            auto message_timestamp = bag_message->time_stamp;
+
+            double message_timestamp_seconds = static_cast<double>(message_timestamp) * 1e-9;
+            QDateTime message_datetime = QDateTime::fromSecsSinceEpoch(message_timestamp_seconds, Qt::LocalTime);
+
+            auto nanoseconds = std::chrono::nanoseconds(message_timestamp); //TODO: uniform code for ms extraction
+            auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(nanoseconds % std::chrono::seconds(1));
+            message_datetime = message_datetime.addMSecs(milliseconds.count());
+
+
+            if (message_datetime >= trimStart_ && message_datetime <= trimEnd_) {
+
+                if (topic_whitelist_.find(bag_message->topic_name) != topic_whitelist_.end()) {
+
+                    auto it = topic_rename_.find(bag_message->topic_name);
+                    if (it != topic_rename_.end()){bag_message->topic_name.assign(topic_rename_[bag_message->topic_name]);}
+
+                    storage->write(bag_message);
+
+                }
+
             }else{
-                storage->create_topic(topic_metadata.topic_metadata);
-                qDebug() << "Creating: "<<topic_metadata.topic_metadata.name;
-            }
-        }
-    }
 
-    reader.reset_filter();
-
-    //Write serialized data
-    while (reader.has_next()) {
-
-        auto bag_message = reader.read_next();
-        auto message_timestamp = bag_message->time_stamp;
-
-        double message_timestamp_seconds = static_cast<double>(message_timestamp) * 1e-9;
-        QDateTime message_datetime = QDateTime::fromSecsSinceEpoch(message_timestamp_seconds, Qt::LocalTime);
-
-        auto nanoseconds = std::chrono::nanoseconds(message_timestamp); //TODO: uniform code for ms extraction
-        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(nanoseconds % std::chrono::seconds(1));
-        message_datetime = message_datetime.addMSecs(milliseconds.count());
-
-
-        if (message_datetime >= trimStart_ && message_datetime <= trimEnd_) {
-
-            if (topic_whitelist_.find(bag_message->topic_name) != topic_whitelist_.end()) {
-
-                auto it = topic_rename_.find(bag_message->topic_name);
-                if (it != topic_rename_.end()){bag_message->topic_name.assign(topic_rename_[bag_message->topic_name]);}
-
-                storage->write(bag_message);
+                //qDebug() << "Trimming";
 
             }
 
-        }else{
-
-            //qDebug() << "Trimming";
-
         }
 
+        statusBar()->showMessage("Finished writing output rosbag.", 3000);
+
+    }
+    catch (...) {
+        qDebug() << "Error during write.";
+        return;
     }
 
-    statusBar()->showMessage("Finished writing output rosbag.", 3000);
 
+}
+
+void MainWindow::enableSaveButton()
+{
+    ui->saveBtn->setEnabled(true);
 }
 
 
@@ -321,8 +362,6 @@ void MainWindow::populateTreeWidget(const QString &path) {
     parentItem->setText(0, dir.dirName());
     parentItem->setData(0, Qt::UserRole, dir.absolutePath());
 
-    //qDebug()<<"PATH:"<<path;
-    //qDebug()<<"test:"<<dir.absolutePath();
 
     // Filter only .db3 files
     QStringList entries = dir.entryList(QStringList() << "*.db3", QDir::Files | QDir::NoDotAndDotDot);
@@ -333,14 +372,10 @@ void MainWindow::populateTreeWidget(const QString &path) {
         QTreeWidgetItem *item = new QTreeWidgetItem(parentItem);
         item->setText(0, entry);
 
-        qDebug()<<"second test:"<<dir.absoluteFilePath(entry);
-        // If it's a file, set size and type
         QFileInfo fileInfo(dir.absoluteFilePath(entry));
         item->setText(1, QString::number(fileInfo.size()));
         item->setText(2, fileInfo.suffix().toUpper());
 
-
-        //qDebug() << "PROVOLA" << fileInfo.absoluteFilePath();
     }
 
     ui->treeWidget->expandItem(parentItem);
@@ -348,23 +383,22 @@ void MainWindow::populateTreeWidget(const QString &path) {
 }
 
 void MainWindow::onTreeItemDoubleClicked(QTreeWidgetItem *item, int column) {
-    // Check if the item is a file and has a .db3 extension
 
-    QString path;
     if(item){
 
         if (item->parent() == nullptr) {
-            path = item->data(0, Qt::UserRole).toString();
+            input_path_ = item->data(0, Qt::UserRole).toString();
         } else {
             QTreeWidgetItem *parentItem = item->parent();
-            path = parentItem->data(0, Qt::UserRole).toString() + QDir::separator() + item->text(0);
+            input_path_ = parentItem->data(0, Qt::UserRole).toString() + QDir::separator() + item->text(0);
+
         }
 
-        QFileInfo fileInfo(path);
+        QFileInfo fileInfo(input_path_);
         if (fileInfo.suffix().toLower() == "db3") {
-            load(path);
+            load(input_path_);
         } else {
-            qDebug() << "Selected file does not have a .db3 extension.";
+            //qDebug() << "Selected file does not have a .db3 extension.";
         }
 
     }
@@ -386,8 +420,8 @@ void MainWindow::on_outputList_itemChanged(QTableWidgetItem *item)
     if (item_col == 1){
 
         topic_rename_[ui->outputList->item(item_row,0)->text().toStdString()]=item->text().toStdString();
-        qDebug() << "original name: " <<ui->outputList->item(item_row,0)->text();
-        qDebug() <<"mapped name: " <<item->text();
+        //qDebug() << "original name: " <<ui->outputList->item(item_row,0)->text();
+        //qDebug() <<"mapped name: " <<item->text();
 
     }
 }
@@ -410,17 +444,13 @@ std::string getFormattedTime(std::time_t time, std::chrono::milliseconds millise
 void MainWindow::getTimeInfo() {
     const auto metadata = reader.get_metadata();
 
-    qDebug() << "STARTING TIME";
-
-    // Get and print start time with milliseconds
     auto starting_time = std::chrono::system_clock::to_time_t(metadata.starting_time);
     auto starting_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(metadata.starting_time.time_since_epoch()) % 1000;
-    qDebug() << "Start Time:" << QString::fromStdString(getFormattedTime(starting_time, starting_milliseconds));
+    //qDebug() << "Start Time:" << QString::fromStdString(getFormattedTime(starting_time, starting_milliseconds));
 
-    // Get and print end time with milliseconds
     auto end_time = std::chrono::system_clock::to_time_t(metadata.starting_time + metadata.duration);
     auto ending_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>((metadata.starting_time + metadata.duration).time_since_epoch()) % 1000;
-    qDebug() << "End Time:" << QString::fromStdString(getFormattedTime(end_time, ending_milliseconds));
+    //qDebug() << "End Time:" << QString::fromStdString(getFormattedTime(end_time, ending_milliseconds));
 
     auto starting_time_point = metadata.starting_time;
     auto end_time_point = metadata.starting_time + metadata.duration;
@@ -437,10 +467,15 @@ void MainWindow::getTimeInfo() {
 }
 
 
-
 void MainWindow::on_actionSave_triggered()
 {
-    on_saveBtn_clicked();
+    try{
+        on_saveBtn_clicked();
+    }
+    catch(...){
+        qDebug() <<"Error on save";
+        return;
+    }
 }
 
 

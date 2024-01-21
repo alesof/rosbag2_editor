@@ -6,6 +6,7 @@
 #include <QString>
 #include <QTreeWidgetItem>
 #include <QTableWidgetItem>
+#include <QTimer>
 
 #include <rosbag2_cpp/readers/sequential_reader.hpp>
 #include <rosbag2_cpp/typesupport_helpers.hpp>
@@ -57,14 +58,15 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QPalette status_bar_palette_;
+    QTimer cooldown_timer_;
 
     rosbag2_cpp::readers::SequentialReader reader;
     std::unordered_set<std::string> topic_whitelist_;
     std::map<std::string, std::string> topic_rename_;
+    QString input_path_;
 
     QDateTime endDateTime_;
     QDateTime startDateTime_;
-
     QDateTime trimStart_;
     QDateTime trimEnd_;
 
@@ -79,6 +81,7 @@ private:
     void setPaletteError();
     void setPaletteNormal();
     void setPaletteOk();
+    void enableSaveButton();
 
 };
 #endif // MAINWINDOW_H
