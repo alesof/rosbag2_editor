@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 Alessandro Sofia
+Copyright (c) 2024 Alessandro Sofia - alessandro.sofia@unina.it
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -8,6 +8,20 @@ in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
+
+Attribution Requirement
+Users of the software are required to give appropriate credit to Alessandro Sofia. 
+This attribution should be included in all copies or substantial portions of the
+software and, where feasible, in the documentation accompanying the software.
+
+Prominent Notice Requirement
+Any substantial portions of the Software, or modifications thereof, must include a 
+prominent notice in a clear and visible manner stating that the software contains 
+code from Alessandro Sofia, and a reference to the original source.
+
+Non Commercial Use
+Commercial use of the Software is prohibited. This includes, but is not limited 
+to, the integration of the Software into products or services intended for sale.
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
