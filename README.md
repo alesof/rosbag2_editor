@@ -14,18 +14,16 @@ Main features:
 ## Installation 
 
 1. Download the release
-2. Make the appimage executable:
-    chmod a+x rosbag2_editor-v1_0_0-x86-64.AppImage
-3. Run:
-    ./rosbag2_editor-v1_0_0-x86-64.AppImage
+2. Make the appimage executable: `chmod a+x rosbag2_editor-v1_0_0-x86-64.AppImage`
+3. Run: `./rosbag2_editor-v1_0_0-x86-64.AppImage`
 
 ## How to use it
 
-[TODO]: explain
+[TODO]: Needs definition
 
 ## Build from source 
 
-[TODO]: explain
+[TODO]: Needs definition
 
 # License 
 
