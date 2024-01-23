@@ -67,7 +67,7 @@ void MainWindow::load(const QString& filePath){
     ui->outputList->clearContents();
 
     if (!filePath.isEmpty()) {
-        qDebug() << "Selected file: " << filePath;
+        //qDebug() << "Selected file: " << filePath;
     }
 
     extractRosbagMetadata(filePath);
@@ -101,10 +101,10 @@ void MainWindow::extractRosbagMetadata(const QString &filePath)
 
         msg = reader.read_next();
 
-        qDebug() << msg->time_stamp;
-        qDebug() << msg->topic_name;
+        //qDebug() << msg->time_stamp;
+        //qDebug() << msg->topic_name;
 
-        //qDebug() << "Bag duration: " << metadata.duration;
+        ////qDebug() << "Bag duration: " << metadata.duration;
 
         int nRow = static_cast<int>(std::size(metadata.topics_with_message_count));
 
@@ -129,9 +129,9 @@ void MainWindow::extractRosbagMetadata(const QString &filePath)
             //ui->inputList->setItem(i, 2, item_count);
 
             i++;
-            //qDebug() << "Topic: " << topic_metadata.topic_metadata.name;
-            //qDebug() << "  Type: " << topic_metadata.topic_metadata.type;
-            //qDebug() << "  Message count: " << topic_metadata.message_count;
+            ////qDebug() << "Topic: " << topic_metadata.topic_metadata.name;
+            ////qDebug() << "  Type: " << topic_metadata.topic_metadata.type;
+            ////qDebug() << "  Message count: " << topic_metadata.message_count;
         }
 
         setPaletteOk();
@@ -139,7 +139,7 @@ void MainWindow::extractRosbagMetadata(const QString &filePath)
         setPaletteNormal();
 
     } catch (const std::exception &e) {
-        qDebug() << "Error opening or reading bag file: " << e.what();
+        //qDebug() << "Error opening or reading bag file: " << e.what();
     }
 }
 
@@ -212,13 +212,13 @@ void MainWindow::on_removeButton_clicked()
     int selectedRow = selectedItems.first()->row();
     QString removed_topic = selectedItems.first()->text();
 
-    qDebug() << "Shifting items and deleting last row";
+    //qDebug() << "Shifting items and deleting last row";
 
     auto it = topic_whitelist_.find(removed_topic.toStdString());
 
     if (it != topic_whitelist_.end()) {
         topic_whitelist_.erase(it);
-        qDebug() << "Deleting item from whitelist";
+        //qDebug() << "Deleting item from whitelist";
     }
 
     for (int row = selectedRow; row < out_rows_-1; row++) {
@@ -259,7 +259,7 @@ void MainWindow::on_saveBtn_clicked()
                 baseName = outName + QString("_%1").arg(append++);
             }
         } catch (...) {
-            qDebug() << "Error occurred on output file name.";
+            //qDebug() << "Error occurred on output file name.";
             return;
         }
 
@@ -267,7 +267,7 @@ void MainWindow::on_saveBtn_clicked()
         QString outputPath = inputFileInfo.path();
         QString fullFilePath = outputPath + "/" + baseName;
 
-        qDebug() << "Output file path: " << fullFilePath;
+        //qDebug() << "Output file path: " << fullFilePath;
 
 
         reader.reset_filter();
@@ -290,10 +290,10 @@ void MainWindow::on_saveBtn_clicked()
                     rosbag2_storage::TopicMetadata modified_topic_metadata = topic_metadata.topic_metadata;
                     modified_topic_metadata.name = it->second;
                     storage->create_topic(modified_topic_metadata);
-                    qDebug() << "Creating: "<<modified_topic_metadata.name;
+                    //qDebug() << "Creating: "<<modified_topic_metadata.name;
                 }else{
                     storage->create_topic(topic_metadata.topic_metadata);
-                    qDebug() << "Creating: "<<topic_metadata.topic_metadata.name;
+                    //qDebug() << "Creating: "<<topic_metadata.topic_metadata.name;
                 }
             }
         }
@@ -326,7 +326,7 @@ void MainWindow::on_saveBtn_clicked()
 
             }else{
 
-                //qDebug() << "Trimming";
+                ////qDebug() << "Trimming";
 
             }
 
@@ -336,7 +336,7 @@ void MainWindow::on_saveBtn_clicked()
 
     }
     catch (...) {
-        qDebug() << "Error during write.";
+        //qDebug() << "Error during write.";
         return;
     }
 
@@ -398,7 +398,7 @@ void MainWindow::onTreeItemDoubleClicked(QTreeWidgetItem *item, int column) {
         if (fileInfo.suffix().toLower() == "db3") {
             load(input_path_);
         } else {
-            //qDebug() << "Selected file does not have a .db3 extension.";
+            ////qDebug() << "Selected file does not have a .db3 extension.";
         }
 
     }
@@ -420,8 +420,8 @@ void MainWindow::on_outputList_itemChanged(QTableWidgetItem *item)
     if (item_col == 1){
 
         topic_rename_[ui->outputList->item(item_row,0)->text().toStdString()]=item->text().toStdString();
-        //qDebug() << "original name: " <<ui->outputList->item(item_row,0)->text();
-        //qDebug() <<"mapped name: " <<item->text();
+        ////qDebug() << "original name: " <<ui->outputList->item(item_row,0)->text();
+        ////qDebug() <<"mapped name: " <<item->text();
 
     }
 }
@@ -429,16 +429,18 @@ void MainWindow::on_outputList_itemChanged(QTableWidgetItem *item)
 
 void MainWindow::on_actionrosbag2csv_triggered()
 {
-    qDebug() << "csv output";
+    //qDebug() << "csv output";
 
 }
 
 std::string getFormattedTime(std::time_t time, std::chrono::milliseconds milliseconds) {
-    std::tm timeinfo = *std::localtime(&time);
-    std::ostringstream oss;
-    oss << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S");
-    oss << "." << std::setfill('0') << std::setw(3) << milliseconds.count(); // Include milliseconds
-    return oss.str();
+    // std::tm timeinfo = *std::localtime(&time);
+    // std::ostringstream oss;
+    // oss << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S");
+    // oss << "." << std::setfill('0') << std::setw(3) << milliseconds.count(); // Include milliseconds
+    // return oss.str();
+    qDebug() <<"test";
+    return "test";
 }
 
 void MainWindow::getTimeInfo() {
@@ -446,11 +448,11 @@ void MainWindow::getTimeInfo() {
 
     auto starting_time = std::chrono::system_clock::to_time_t(metadata.starting_time);
     auto starting_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(metadata.starting_time.time_since_epoch()) % 1000;
-    //qDebug() << "Start Time:" << QString::fromStdString(getFormattedTime(starting_time, starting_milliseconds));
+    ////qDebug() << "Start Time:" << QString::fromStdString(getFormattedTime(starting_time, starting_milliseconds));
 
     auto end_time = std::chrono::system_clock::to_time_t(metadata.starting_time + metadata.duration);
     auto ending_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>((metadata.starting_time + metadata.duration).time_since_epoch()) % 1000;
-    //qDebug() << "End Time:" << QString::fromStdString(getFormattedTime(end_time, ending_milliseconds));
+    ////qDebug() << "End Time:" << QString::fromStdString(getFormattedTime(end_time, ending_milliseconds));
 
     auto starting_time_point = metadata.starting_time;
     auto end_time_point = metadata.starting_time + metadata.duration;
@@ -473,7 +475,7 @@ void MainWindow::on_actionSave_triggered()
         on_saveBtn_clicked();
     }
     catch(...){
-        qDebug() <<"Error on save";
+        //qDebug() <<"Error on save";
         return;
     }
 }
@@ -482,7 +484,7 @@ void MainWindow::on_actionSave_triggered()
 void MainWindow::on_outBeginTime_dateTimeChanged(const QDateTime &dateTime)
 {
     trimStart_ = dateTime;
-    //qDebug() << "trimStart changed:"<<dateTime;
+    ////qDebug() << "trimStart changed:"<<dateTime;
 
 }
 
@@ -490,7 +492,7 @@ void MainWindow::on_outBeginTime_dateTimeChanged(const QDateTime &dateTime)
 void MainWindow::on_outEndTime_dateTimeChanged(const QDateTime &dateTime)
 {
     trimEnd_ = dateTime;
-    //qDebug() << "trimEnd_ changed:"<<dateTime;
+    ////qDebug() << "trimEnd_ changed:"<<dateTime;
 }
 
 

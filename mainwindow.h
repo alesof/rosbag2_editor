@@ -7,9 +7,11 @@
 #include <QTreeWidgetItem>
 #include <QTableWidgetItem>
 #include <QTimer>
+#include <QDateTime>
 
 #include <rosbag2_cpp/readers/sequential_reader.hpp>
 #include <rosbag2_cpp/typesupport_helpers.hpp>
+#include "newprojectdialog.h"
 
 
 QT_BEGIN_NAMESPACE
