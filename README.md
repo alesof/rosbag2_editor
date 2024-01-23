@@ -22,7 +22,8 @@ Main features:
 ### [Method 2]: AppImage
 1. Download the release
 2. Make the appimage executable: `chmod a+x rosbag2_editor-v1_0_0-x86-64.AppImage`
-3. Run: `./rosbag2_editor-v1_0_0-x86-64.AppImage`
+3. Source ROS2: `source /opt/ros/humble/setup.bash`
+4. Run: `./rosbag2_editor-v1_0_0-x86-64.AppImage`
 
 ## How to use it
 
