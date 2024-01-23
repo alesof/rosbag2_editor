@@ -13,6 +13,12 @@ Main features:
 
 ## Installation 
 
+### [Method 1]: debian package
+1. Download the release
+2. Paste in a new terminal: `sudo dpkg -i rosbag2-editor_v1.0.0.deb`
+3. Run: `rosbag2-editor`
+  
+### [Method 2]: AppImage
 1. Download the release
 2. Make the appimage executable: `chmod a+x rosbag2_editor-v1_0_0-x86-64.AppImage`
 3. Run: `./rosbag2_editor-v1_0_0-x86-64.AppImage`
