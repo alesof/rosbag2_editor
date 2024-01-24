@@ -42,5 +42,5 @@ Main features:
 
 # Acknowledgements 
 
-Inspired from [https://github.com/facontidavide/rosbag_editor](rosbag_editor) for ROS
+Inspired from [rosbag_editor](https://github.com/facontidavide/rosbag_editor) for ROS
 
