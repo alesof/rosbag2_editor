@@ -34,7 +34,14 @@ Main features:
 
 ## Build from source 
 
-[TODO]: Needs definition
+```bash
+git clone https://github.com/alesof/rosbag2_editor.git
+cd rosbag2_editor
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
 
 # License 
 

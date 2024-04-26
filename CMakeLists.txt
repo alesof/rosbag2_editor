@@ -20,6 +20,9 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        newprojectdialog.ui
+        newprojectdialog.h
+        newprojectdialog.cpp
 
 )
 
@@ -39,12 +42,14 @@ else()
     if(ANDROID)
         add_library(ros2bag_editor SHARED
             ${PROJECT_SOURCES}
+            resource_icons.qrc
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
         add_executable(ros2bag_editor
             ${PROJECT_SOURCES}
+            resource_icons.qrc
         )
     endif()
 endif()
