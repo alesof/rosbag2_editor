@@ -14,15 +14,21 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 find_package(ament_cmake REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
+
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        newprojectdialog.ui
-        newprojectdialog.h
-        newprojectdialog.cpp
+        src/main.cpp
+        src/mainwindow.cpp
+        src/mainwindow.h
+        src/mainwindow.ui
+        src/newprojectdialog.ui
+        src/newprojectdialog.h
+        src/newprojectdialog.cpp
 
 )
 
@@ -34,35 +40,20 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         icons/chat-bubble-xmark.svg icons/chat-minus-in.svg icons/chat-plus-in.svg icons/floppy-disk.svg icons/import.svg icons/upload.svg
         newprojectdialog.ui newprojectdialog.h newprojectdialog.cpp
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET ros2bag_editor APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+
 else()
-    if(ANDROID)
-        add_library(ros2bag_editor SHARED
-            ${PROJECT_SOURCES}
-            resource_icons.qrc
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(ros2bag_editor
-            ${PROJECT_SOURCES}
-            resource_icons.qrc
-        )
-    endif()
+    add_executable(ros2bag_editor
+        ${PROJECT_SOURCES}
+        resource_icons.qrc
+    )
 endif()
 
 target_include_directories(ros2bag_editor PRIVATE ${rosbag2_cpp_INCLUDE_DIRS})
-ament_target_dependencies(ros2bag_editor PUBLIC rosbag2_cpp)
+ament_target_dependencies(ros2bag_editor PUBLIC rosbag2_cpp geometry_msgs)
 target_link_libraries(ros2bag_editor PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
 )
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.ros2bag_editor)
 endif()

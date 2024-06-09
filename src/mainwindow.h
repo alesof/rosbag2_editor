@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -10,8 +9,14 @@
 #include <QDateTime>
 
 #include <rosbag2_cpp/readers/sequential_reader.hpp>
+#include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>
 #include <rosbag2_cpp/typesupport_helpers.hpp>
 #include "newprojectdialog.h"
+#include <iostream>
+#include "geometry_msgs/msg/pose.hpp"
+#include "rosbag_parser.h"
+
+#include <memory>
 
 
 QT_BEGIN_NAMESPACE
@@ -32,8 +37,6 @@ private slots:
     void on_loadBtn_clicked();
 
     void on_applyButton_clicked();
-
-    void on_inputList_itemSelectionChanged();
 
     void on_removeButton_clicked();
 
@@ -57,12 +60,15 @@ private slots:
 
     void on_actionContacts_triggered();
 
+    void on_exportBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPalette status_bar_palette_;
     QTimer cooldown_timer_;
 
-    rosbag2_cpp::readers::SequentialReader reader;
+    std::shared_ptr<Rosbag2Parser> parser_;
+
     std::unordered_set<std::string> topic_whitelist_;
     std::map<std::string, std::string> topic_rename_;
     QString input_path_;
@@ -86,4 +92,3 @@ private:
     void enableSaveButton();
 
 };
-#endif // MAINWINDOW_H
