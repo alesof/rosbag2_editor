@@ -217,9 +217,7 @@ void MainWindow::on_saveBtn_clicked()
     try{
 
         QString filePath = input_path_;
-
         QString outName = QString("rosbag2_edit_") + QDateTime::currentDateTime().toString("yy_MM_dd-hh_mm_ss");
-
 
         int append = 1;
         QString baseName = outName;

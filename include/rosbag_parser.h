@@ -49,6 +49,8 @@ public:
             for (const auto & topic : topics_and_types_)
             {
                 topic_name_map_[topic.name]=topic.type;
+                parser_.registerParser(topic.name, RosMsgParser::ROSType(topic.type), RosMsgParser::GetMessageDefinition(topic.type));
+                
             }
 
         }
@@ -99,8 +101,6 @@ public:
         std::unordered_map<std::string, std::ofstream> fileStreams;
         std::regex slash_regex("/");
         std::regex csv_regex(".csv");
-
-        std::shared_ptr<rosbag2_storage::SerializedBagMessage> serialized_message;
         std::string topic_type;
 
         if(!split_topics){
@@ -112,7 +112,7 @@ public:
 
         }else{
             for(auto &topic : topic_name_map_){
-                std::cout<<"Creating file for topic: "<<topic.first<<std::endl;
+                // std::cout<<"Creating file for topic: "<<topic.first<<std::endl;
                 std::ofstream file(std::regex_replace(filename, csv_regex, "") + "_" + std::regex_replace(topic.first, slash_regex, "") + ".csv");
                 if (!file.is_open()) {
                     std::cerr << "Error opening file for writing: " << filename << std::endl;
@@ -122,13 +122,12 @@ public:
             }
         }
 
-        while(reader_.has_next()){
+        while(hasNext()){
 
-            RosMsgParser::ParsersCollection<RosMsgParser::ROS2_Deserializer> parser;
-            serialized_message = reader_.read_next();
+            readNext();
 
             try{
-                topic_type = topic_name_map_.at(serialized_message->topic_name);
+                topic_type = topic_name_map_.at(msg_->topic_name);
             }
             catch(const std::exception &e){
                 std::cerr << "Error getting topic type: " << e.what() << std::endl;
@@ -136,12 +135,12 @@ public:
 
             // if(topic_type=="rcl_interfaces/msg/Log") continue;
 
-            parser.registerParser("joint_state", RosMsgParser::ROSType(topic_type), RosMsgParser::GetMessageDefinition(topic_type));
-            auto data = serialized_message->serialized_data->buffer;
-            auto length = serialized_message->serialized_data->buffer_length;
+            auto data = msg_->serialized_data->buffer;
+            auto length = msg_->serialized_data->buffer_length;
 
             std::vector<uint8_t> buffer(data, data + length);
-            auto flat_container = parser.deserialize("joint_state", RosMsgParser::Span<uint8_t>(buffer));
+            parser_.getParser(msg_->topic_name);
+            auto flat_container = parser_.deserialize(msg_->topic_name, RosMsgParser::Span<uint8_t>(buffer));
             
             if(!split_topics){
                 for (auto& it : flat_container->value)
@@ -157,7 +156,7 @@ public:
             }
             else{
 
-                auto file_it = fileStreams.find(serialized_message->topic_name);
+                auto file_it = fileStreams.find(msg_->topic_name);
                 if (file_it != fileStreams.end()) {
                     
                     if(file_it->second.tellp() == 0){ //check if file empty write header
@@ -172,7 +171,7 @@ public:
                         file_it->second << std::endl;
                     }
 
-                    // std::cout<<"Found file associated with: "<<serialized_message->topic_name<<std::endl;
+                    // std::cout<<"Found file associated with: "<<msg_->topic_name<<std::endl;
                     for (auto& it : flat_container->value)
                     {
                         file_it->second << it.second.convert<double>() << ",";
@@ -202,19 +201,15 @@ public:
 
     }
     
-
 private:
     rosbag2_cpp::readers::SequentialReader reader_;
     std::map<std::string, std::string> topic_name_map_;
-
-    std::string bag_path_;
-
     std::shared_ptr<rosbag2_storage::SerializedBagMessage> msg_;
+    std::string bag_path_;
 
     rosbag2_storage::StorageOptions storage_options_;
     rosbag2_cpp::ConverterOptions converter_options_;
-
-    rosbag2_cpp::SerializationFormatConverterFactory factory_;
+    RosMsgParser::ParsersCollection<RosMsgParser::ROS2_Deserializer> parser_;
 };
 
 
