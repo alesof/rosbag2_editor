@@ -1,9 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "newprojectdialog.h"
-
+#include "info_dialog.h"
 #include <QDebug>
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -142,7 +140,6 @@ void MainWindow::setPaletteOk(){
 
 }
 
-
 void MainWindow::on_applyButton_clicked()
 {
 
@@ -239,9 +236,6 @@ void MainWindow::on_saveBtn_clicked()
         QFileInfo inputFileInfo(input_path_);
         QString outputPath = inputFileInfo.path();
         QString fullFilePath = outputPath + "/" + baseName;
-
-        //qDebug() << "Output file path: " << fullFilePath;
-
         rosbag2_storage::StorageOptions storage_options;
         storage_options.uri = fullFilePath.toStdString();
         storage_options.storage_id = "sqlite3";
@@ -268,7 +262,6 @@ void MainWindow::on_saveBtn_clicked()
             }
         }
 
-
         while (parser_->hasNext()) {
 
             auto bag_message = parser_->readNext();
@@ -281,7 +274,6 @@ void MainWindow::on_saveBtn_clicked()
             auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(nanoseconds % std::chrono::seconds(1));
             message_datetime = message_datetime.addMSecs(milliseconds.count());
 
-
             if (message_datetime >= trimStart_ && message_datetime <= trimEnd_) {
 
                 if (topic_whitelist_.find(bag_message->topic_name) != topic_whitelist_.end()) {
@@ -290,25 +282,15 @@ void MainWindow::on_saveBtn_clicked()
                     if (it != topic_rename_.end()){bag_message->topic_name.assign(topic_rename_[bag_message->topic_name]);}
 
                     storage->write(bag_message);
-
                 }
-
-            }else{
-
-                //qDebug() << "Trimming";
-
             }
-
         }
-
         statusBar()->showMessage("Finished writing output rosbag.", 3000);
-
     }
     catch (...) {
-        //qDebug() << "Error during write.";
+        statusBar()->showMessage("Unexpected error while writing.", 3000);
         return;
     }
-
 
 }
 
@@ -317,7 +299,6 @@ void MainWindow::enableSaveButton()
     ui->saveBtn->setEnabled(true);
     ui->exportBtn->setEnabled(true);
 }
-
 
 void MainWindow::on_actionOpen_Directory_triggered()
 {
@@ -373,12 +354,10 @@ void MainWindow::onTreeItemDoubleClicked(QTreeWidgetItem *item, int column) {
 
 }
 
-
 void MainWindow::on_actionOpen_Rosbag_triggered()
 {
     on_loadBtn_clicked();
 }
-
 
 void MainWindow::on_outputList_itemChanged(QTableWidgetItem *item)
 {
@@ -394,33 +373,16 @@ void MainWindow::on_outputList_itemChanged(QTableWidgetItem *item)
     }
 }
 
-
-void MainWindow::on_actionrosbag2csv_triggered()
-{
-    //qDebug() << "csv output";
-
-}
-
-std::string getFormattedTime(std::time_t time, std::chrono::milliseconds milliseconds) {
-    // std::tm timeinfo = *std::localtime(&time);
-    // std::ostringstream oss;
-    // oss << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S");
-    // oss << "." << std::setfill('0') << std::setw(3) << milliseconds.count(); // Include milliseconds
-    // return oss.str();
-    qDebug() <<"test";
-    return "test";
-}
+void MainWindow::on_actionExport_triggered(){ on_exportBtn_clicked(); }
 
 void MainWindow::getTimeInfo() {
     const auto metadata = parser_->getMetadata();
 
     auto starting_time = std::chrono::system_clock::to_time_t(metadata.starting_time);
     auto starting_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(metadata.starting_time.time_since_epoch()) % 1000;
-    ////qDebug() << "Start Time:" << QString::fromStdString(getFormattedTime(starting_time, starting_milliseconds));
 
     auto end_time = std::chrono::system_clock::to_time_t(metadata.starting_time + metadata.duration);
     auto ending_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>((metadata.starting_time + metadata.duration).time_since_epoch()) % 1000;
-    ////qDebug() << "End Time:" << QString::fromStdString(getFormattedTime(end_time, ending_milliseconds));
 
     auto starting_time_point = metadata.starting_time;
     auto end_time_point = metadata.starting_time + metadata.duration;
@@ -436,7 +398,6 @@ void MainWindow::getTimeInfo() {
 
 }
 
-
 void MainWindow::on_actionSave_triggered()
 {
     try{
@@ -448,7 +409,6 @@ void MainWindow::on_actionSave_triggered()
     }
 }
 
-
 void MainWindow::on_outBeginTime_dateTimeChanged(const QDateTime &dateTime)
 {
     trimStart_ = dateTime;
@@ -456,23 +416,24 @@ void MainWindow::on_outBeginTime_dateTimeChanged(const QDateTime &dateTime)
 
 }
 
-
 void MainWindow::on_outEndTime_dateTimeChanged(const QDateTime &dateTime)
 {
     trimEnd_ = dateTime;
     //qDebug() << "trimEnd_ changed:"<<dateTime;
 }
 
-
 void MainWindow::on_actionContacts_triggered()
 {
-    NewProjectDialog* test = new NewProjectDialog(this);
-
-    int result = test->exec();
+    InfoDialog* infod = new InfoDialog(this);
+    infod->exec();
 }
 
 void MainWindow::on_exportBtn_clicked()
 {
+    if(input_path_.isEmpty()){
+        statusBar()->showMessage("Must load a rosbag to export!", 3000);
+        return;
+    }
 
     ui->exportBtn->setEnabled(false);
     ui->saveBtn->setEnabled(false);
@@ -481,7 +442,6 @@ void MainWindow::on_exportBtn_clicked()
     connect(&cooldown_timer_, &QTimer::timeout, this, &MainWindow::enableSaveButton);
     cooldown_timer_.start(1000); // 1s
 
-    QString filePath = input_path_;
     QString outName = QString("rosbag2_edit_") + QDateTime::currentDateTime().toString("yy_MM_dd-hh_mm_ss");
     
     int append = 1;
@@ -499,61 +459,9 @@ void MainWindow::on_exportBtn_clicked()
     QFileInfo inputFileInfo(input_path_);
     QString outputPath = inputFileInfo.path();
     QString fullFilePath = outputPath + "/" + baseName +".csv";
-    qDebug() << "Output CSV path: " << fullFilePath;
+    statusBar()->showMessage("Saving to"+outputPath, 3000);
 
-    QFile csvFile(fullFilePath);
-
-    try {
-        csvFile.open(QIODevice::WriteOnly | QIODevice::Text);
-        
-    } catch (...) {
-        qDebug() << "Error occurred on output file name.";
-        return;
-    }
-
-    parser_->bag2csv();
-
-    // QTextStream csvStream(&csvFile);
-
-    // std::vector<rosbag2_storage::TopicMetadata> topics_and_types_ = reader.get_all_topics_and_types();
-    // std::map<std::string,std::string> topicNameMap;
-
-    // for (const auto & topic : topics_and_types_)
-    // {
-    //     qDebug() << "TEST FOR EXPORT - TODO: CANCEL THESE PRINTS";
-    //     qDebug() << "meta name: " << QString::fromStdString(topic.name);
-    //     qDebug() << "meta type: " << QString::fromStdString(topic.type);
-    //     qDebug() << "meta serialization_format: " << QString::fromStdString(topic.serialization_format);
-    //     topicNameMap[topic.name]=topic.type;
-    // }
-
-    // auto ros_message = std::make_shared<rosbag2_cpp::rosbag2_introspection_message_t>();
-    // rosbag2_cpp::SerializationFormatConverterFactory factory;
-
-    // std::shared_ptr<rosbag2_storage::SerializedBagMessage> serialized_message;
-
-    // auto library_test = rosbag2_cpp::get_typesupport_library("geometry_msgs/msg/Pose", "rosidl_typesupport_cpp");
-    // auto type_support_pose = rosbag2_cpp::get_typesupport_handle("geometry_msgs/msg/Pose", "rosidl_typesupport_cpp", library_test);
-
-
-    // std::unique_ptr<rosbag2_cpp::converter_interfaces::SerializationFormatDeserializer> cdr_deserializer;
-    // cdr_deserializer = factory.load_deserializer("cdr");
-
-
-    // while (reader.has_next()) {
-        
-    //     serialized_message = reader.read_next();
-
-    //     auto general_lib = rosbag2_cpp::get_typesupport_library(topicNameMap[serialized_message->topic_name], "rosidl_typesupport_cpp");
-    //     auto general_type_support = rosbag2_cpp::get_typesupport_handle(topicNameMap[serialized_message->topic_name], "rosidl_typesupport_cpp", general_lib);
-        
-    //     geometry_msgs::msg::Pose pose_test;
-    //     ros_message->message = &pose_test;
-    //     cdr_deserializer->deserialize(serialized_message, general_type_support, ros_message);
-
-    //   // write the content to the output file
-    //   qDebug() << "POSE" << "," << pose_test.position.x << "," << pose_test.position.y << "," << pose_test.position.z << "," << pose_test.orientation.x << "," << pose_test.orientation.y << "," << pose_test.orientation.z << "," << pose_test.orientation.w;
-    // }
-
+    parser_->bag2csv(fullFilePath.toStdString());
+    
         
 }

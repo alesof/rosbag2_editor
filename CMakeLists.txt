@@ -14,7 +14,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 find_package(ament_cmake REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
-find_package(geometry_msgs REQUIRED)
+#find_package(rosx_introspection REQUIRED)
+
+add_subdirectory(rosx_introspection)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
@@ -26,10 +28,9 @@ set(PROJECT_SOURCES
         src/mainwindow.cpp
         src/mainwindow.h
         src/mainwindow.ui
-        src/newprojectdialog.ui
-        src/newprojectdialog.h
-        src/newprojectdialog.cpp
-
+        src/info_dialog.ui
+        src/info_dialog.h
+        src/info_dialog.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -37,8 +38,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         resource_icons.qrc
-        icons/chat-bubble-xmark.svg icons/chat-minus-in.svg icons/chat-plus-in.svg icons/floppy-disk.svg icons/import.svg icons/upload.svg
-        newprojectdialog.ui newprojectdialog.h newprojectdialog.cpp
+        icons/chat-bubble-xmark.svg icons/chat-minus-in.svg icons/chat-plus-in.svg icons/floppy-disk.svg icons/import.svg icons/upload.svg icons/export_white.png
+        include/rosbag_parser.h
     )
 
 else()
@@ -49,10 +50,12 @@ else()
 endif()
 
 target_include_directories(ros2bag_editor PRIVATE ${rosbag2_cpp_INCLUDE_DIRS})
-ament_target_dependencies(ros2bag_editor PUBLIC rosbag2_cpp geometry_msgs)
+ament_target_dependencies(ros2bag_editor PUBLIC rosbag2_cpp)
 target_link_libraries(ros2bag_editor PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
+    rosx_introspection
 )
+
 
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.ros2bag_editor)
