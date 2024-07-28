@@ -1,6 +1,6 @@
 ![rosbag2_editor](docs/rosbag2_editor.png)
 
-# rosbag2 editor v1.0.0
+# rosbag2 editor v1.1.0
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/alesof/rosbag2_editor/total) ![GitHub Release](https://img.shields.io/github/v/release/alesof/rosbag2_editor)
  ![GitHub Repo stars](https://img.shields.io/github/stars/alesof/rosbag2_editor)
 
