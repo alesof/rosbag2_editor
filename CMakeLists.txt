@@ -14,7 +14,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 find_package(ament_cmake REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
-#find_package(rosx_introspection REQUIRED)
 
 add_subdirectory(rosx_introspection)
 
@@ -24,13 +23,13 @@ include_directories(
 )
 
 set(PROJECT_SOURCES
-        src/main.cpp
-        src/mainwindow.cpp
-        src/mainwindow.h
-        src/mainwindow.ui
-        src/info_dialog.ui
-        src/info_dialog.h
-        src/info_dialog.cpp
+    src/main.cpp
+    src/mainwindow.cpp
+    src/mainwindow.h
+    src/mainwindow.ui
+    src/info_dialog.ui
+    src/info_dialog.h
+    src/info_dialog.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -41,7 +40,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         icons/chat-bubble-xmark.svg icons/chat-minus-in.svg icons/chat-plus-in.svg icons/floppy-disk.svg icons/import.svg icons/upload.svg icons/export_white.png
         include/rosbag_parser.h
     )
-
 else()
     add_executable(ros2bag_editor
         ${PROJECT_SOURCES}
@@ -55,7 +53,6 @@ target_link_libraries(ros2bag_editor PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     rosx_introspection
 )
-
 
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.ros2bag_editor)
@@ -75,6 +72,15 @@ install(TARGETS ros2bag_editor
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(ros2bag_editor)
-endif()
+install(DIRECTORY ${CMAKE_BINARY_DIR}/rosx_introspection/ DESTINATION ${CMAKE_INSTALL_PREFIX}/rosx_introspection)
+
+# CPack configuration for deb package
+set(CPACK_PACKAGE_NAME "ros2bag_editor")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_CONTACT "alesof <alessandro.sofia@unina.it>")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
+set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+set(CPACK_INSTALL_PREFIX "/usr/local")
+
+include(CPack)
