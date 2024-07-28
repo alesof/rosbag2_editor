@@ -13,18 +13,19 @@ Main features:
 - Remove Topics
 - Trim Rosbag
 - Import directory or file
+- Export to csv files
 
 ## Installation 
 
 ### [Method 1]: debian package
 1. Download the release
-2. Paste in a new terminal: `sudo dpkg -i rosbag2-editor_v1.0.0.deb`
+2. Paste in a new terminal: `sudo dpkg -i rosbag2-editor_v1.1.0.deb`
 3. Source ROS2: `source /opt/ros/humble/setup.bash`
 4. Run: `rosbag2-editor`
   
 ### [Method 2]: AppImage
 1. Download the release
-2. Make the appimage executable: `chmod a+x rosbag2_editor-v1_0_0-x86-64.AppImage`
+2. Make the appimage executable: `chmod a+x rosbag2_editor-v1_1_0-x86-64.AppImage`
 3. Source ROS2: `source /opt/ros/humble/setup.bash`
 4. Run: `./rosbag2_editor-v1_0_0-x86-64.AppImage`
 
@@ -35,7 +36,7 @@ Main features:
 ## Build from source 
 
 ```bash
-git clone https://github.com/alesof/rosbag2_editor.git
+git clone --recurse-submodules https://github.com/alesof/rosbag2_editor.git
 cd rosbag2_editor
 mkdir build
 cd build
@@ -43,9 +44,6 @@ cmake ..
 cmake --build .
 ```
 
-# License 
-
-[TODO]: Needs definition
 
 # Acknowledgements 
 
