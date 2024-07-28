@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NewProjectDialog</class>
- <widget class="QDialog" name="NewProjectDialog">
+ <class>InfoDialog</class>
+ <widget class="QDialog" name="InfoDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,8 +10,26 @@
     <height>176</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>376</width>
+    <height>176</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>376</width>
+    <height>176</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Info</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgba(78,21,53,255)</string>
@@ -49,28 +67,28 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="auth_label">
       <property name="text">
        <string>Author:</string>
       </property>
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="name_label">
       <property name="text">
        <string>Alessandro Sofia</string>
       </property>
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="label_3">
+     <widget class="QLabel" name="cont_label">
       <property name="text">
        <string>Contacts:</string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLabel" name="label_4">
+     <widget class="QLabel" name="email_label">
       <property name="text">
        <string>alessandro.sofia@unina.it</string>
       </property>
@@ -80,14 +98,14 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="label_5">
+     <widget class="QLabel" name="git_label">
       <property name="text">
        <string>GitHub:</string>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLabel" name="label_6">
+     <widget class="QLabel" name="userid_label">
       <property name="text">
        <string>alesof</string>
       </property>

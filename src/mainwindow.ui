@@ -147,40 +147,17 @@ selection-background-color: rgba(233,84,32,255);
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QPushButton" name="removeButton">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>30</y>
-       <width>92</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(53,53,53,255)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="resource_icons.qrc">
-       <normaloff>:/icons/chat-minus-in.svg</normaloff>:/icons/chat-minus-in.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
     <widget class="QPushButton" name="saveBtn">
      <property name="geometry">
       <rect>
-       <x>208</x>
+       <x>105</x>
        <y>30</y>
-       <width>80</width>
+       <width>79</width>
        <height>30</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgba(53,53,53,255)</string>
@@ -189,34 +166,8 @@ selection-background-color: rgba(233,84,32,255);
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource_icons.qrc">
+      <iconset resource="../resource_icons.qrc">
        <normaloff>:/icons/floppy-disk.svg</normaloff>:/icons/floppy-disk.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="applyButton">
-     <property name="geometry">
-      <rect>
-       <x>294</x>
-       <y>30</y>
-       <width>80</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(53,53,53,255)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="resource_icons.qrc">
-       <normaloff>:/icons/chat-plus-in.svg</normaloff>:/icons/chat-plus-in.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -228,11 +179,14 @@ selection-background-color: rgba(233,84,32,255);
     <widget class="QPushButton" name="loadBtn">
      <property name="geometry">
       <rect>
-       <x>122</x>
+       <x>190</x>
        <y>30</y>
-       <width>80</width>
+       <width>79</width>
        <height>30</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Import&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgba(53,53,53,255)</string>
@@ -241,8 +195,95 @@ selection-background-color: rgba(233,84,32,255);
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource_icons.qrc">
+      <iconset resource="../resource_icons.qrc">
        <normaloff>:/icons/upload.svg</normaloff>:/icons/upload.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="exportBtn">
+     <property name="geometry">
+      <rect>
+       <x>275</x>
+       <y>30</y>
+       <width>79</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Export&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(53,53,53,255)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../resource_icons.qrc">
+       <normaloff>:/icons/export_white.png</normaloff>:/icons/export_white.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="removeButton">
+     <property name="geometry">
+      <rect>
+       <x>445</x>
+       <y>30</y>
+       <width>79</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove Topic&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(53,53,53,255)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../resource_icons.qrc">
+       <normaloff>:/icons/chat-minus-in.svg</normaloff>:/icons/chat-minus-in.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="applyButton">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>30</y>
+       <width>79</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Topic&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(53,53,53,255)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../resource_icons.qrc">
+       <normaloff>:/icons/chat-plus-in.svg</normaloff>:/icons/chat-plus-in.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -438,6 +479,7 @@ selection-background-color: rgba(233,84,32,255);
     <addaction name="actionOpen_Directory"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
+    <addaction name="actionExport"/>
    </widget>
    <widget class="QMenu" name="menuInfo">
     <property name="title">
@@ -489,9 +531,17 @@ selection-background-color: rgba(233,84,32,255);
     <string>Info</string>
    </property>
   </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="resource_icons.qrc"/>
+  <include location="../resource_icons.qrc"/>
  </resources>
  <connections/>
 </ui>

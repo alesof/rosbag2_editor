@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -8,10 +7,12 @@
 #include <QTableWidgetItem>
 #include <QTimer>
 #include <QDateTime>
+#include <memory>
 
 #include <rosbag2_cpp/readers/sequential_reader.hpp>
+#include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>
 #include <rosbag2_cpp/typesupport_helpers.hpp>
-#include "newprojectdialog.h"
+#include "rosbag_parser.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -30,39 +31,27 @@ public:
 
 private slots:
     void on_loadBtn_clicked();
-
     void on_applyButton_clicked();
-
-    void on_inputList_itemSelectionChanged();
-
     void on_removeButton_clicked();
-
     void on_saveBtn_clicked();
-
     void on_actionOpen_Directory_triggered();
-
+    void on_actionExport_triggered();
     void onTreeItemDoubleClicked(QTreeWidgetItem *item, int column);
-
     void on_actionOpen_Rosbag_triggered();
-
     void on_outputList_itemChanged(QTableWidgetItem *item);
-
-    void on_actionrosbag2csv_triggered();
-
     void on_actionSave_triggered();
-
     void on_outBeginTime_dateTimeChanged(const QDateTime &dateTime);
-
     void on_outEndTime_dateTimeChanged(const QDateTime &dateTime);
-
     void on_actionContacts_triggered();
+    void on_exportBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
     QPalette status_bar_palette_;
     QTimer cooldown_timer_;
 
-    rosbag2_cpp::readers::SequentialReader reader;
+    std::shared_ptr<Rosbag2Parser> parser_;
+
     std::unordered_set<std::string> topic_whitelist_;
     std::map<std::string, std::string> topic_rename_;
     QString input_path_;
@@ -86,4 +75,3 @@ private:
     void enableSaveButton();
 
 };
-#endif // MAINWINDOW_H

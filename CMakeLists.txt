@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(ros2bag_editor VERSION 0.1 LANGUAGES CXX)
+project(ros2bag_editor VERSION 1.1.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -15,15 +15,21 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(ament_cmake REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
 
-set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        newprojectdialog.ui
-        newprojectdialog.h
-        newprojectdialog.cpp
+add_subdirectory(rosx_introspection)
 
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+set(PROJECT_SOURCES
+    src/main.cpp
+    src/mainwindow.cpp
+    src/mainwindow.h
+    src/mainwindow.ui
+    src/info_dialog.ui
+    src/info_dialog.h
+    src/info_dialog.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -31,38 +37,23 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         resource_icons.qrc
-        icons/chat-bubble-xmark.svg icons/chat-minus-in.svg icons/chat-plus-in.svg icons/floppy-disk.svg icons/import.svg icons/upload.svg
-        newprojectdialog.ui newprojectdialog.h newprojectdialog.cpp
+        icons/chat-bubble-xmark.svg icons/chat-minus-in.svg icons/chat-plus-in.svg icons/floppy-disk.svg icons/import.svg icons/upload.svg icons/export_white.png
+        include/rosbag_parser.h
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET ros2bag_editor APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
-    if(ANDROID)
-        add_library(ros2bag_editor SHARED
-            ${PROJECT_SOURCES}
-            resource_icons.qrc
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(ros2bag_editor
-            ${PROJECT_SOURCES}
-            resource_icons.qrc
-        )
-    endif()
+    add_executable(ros2bag_editor
+        ${PROJECT_SOURCES}
+        resource_icons.qrc
+    )
 endif()
 
 target_include_directories(ros2bag_editor PRIVATE ${rosbag2_cpp_INCLUDE_DIRS})
 ament_target_dependencies(ros2bag_editor PUBLIC rosbag2_cpp)
 target_link_libraries(ros2bag_editor PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
+    rosx_introspection
 )
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.ros2bag_editor)
 endif()
@@ -81,6 +72,15 @@ install(TARGETS ros2bag_editor
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(ros2bag_editor)
-endif()
+install(DIRECTORY ${CMAKE_BINARY_DIR}/rosx_introspection/ DESTINATION ${CMAKE_INSTALL_PREFIX}/rosx_introspection)
+
+# CPack configuration for deb package
+set(CPACK_PACKAGE_NAME "ros2bag_editor")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_CONTACT "alesof <alessandro.sofia@unina.it>")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
+set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+set(CPACK_INSTALL_PREFIX "/usr/local")
+
+include(CPack)

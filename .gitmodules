@@ -1,0 +1,3 @@
+[submodule "rosx_introspection"]
+	path = rosx_introspection
+	url = https://github.com/facontidavide/rosx_introspection
