@@ -19,7 +19,7 @@ Main features:
 
 ### [Method 1]: debian package
 1. Download the release
-2. Paste in a new terminal: `sudo dpkg -i rosbag2-editor_v1.1.0.deb`
+2. Paste in a new terminal: `sudo dpkg -i ros2bag_editor-1.1.0-Linux.deb`
 3. Source ROS2: `source /opt/ros/humble/setup.bash`
 4. Run: `rosbag2-editor`
   
